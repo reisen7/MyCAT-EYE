@@ -1,7 +1,7 @@
 # MyCAT EYE
 MySQL数据库监控工具，实现了对MySQL节点的管理和监控，可供开发人员和DBA使用。后续版本将整合MyCAT2.0的管理和配置。
 
-原作者仓库：[MyCAT EYE](https://gitee.com/redtie/mycateye "MyCAT EYE")
+原作者仓库：[MyCAT EYE](https://gitee.com/redtie/mycateye "MyCAT EYE ")
 
 ## 版本更新：
 
