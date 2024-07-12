@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/mycateye.iml" filepath="$PROJECT_DIR$/.idea/mycateye.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mycateye-agent/mycateye-agent.iml" filepath="$PROJECT_DIR$/mycateye-agent/mycateye-agent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mycateye-web/mycateye-web.iml" filepath="$PROJECT_DIR$/mycateye-web/mycateye-web.iml" />
+    </modules>
+  </component>
+</project>
