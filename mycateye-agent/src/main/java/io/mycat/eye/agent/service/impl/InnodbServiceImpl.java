@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import io.mycat.eye.agent.bean.MysqlServer;
 import org.springframework.stereotype.Service;
 
 import io.mycat.eye.agent.bean.InnodbLockWaits;
@@ -75,7 +76,8 @@ public class InnodbServiceImpl extends AbstractService implements InnodbService 
 
 	@Override
 	public PagedDto<InnodbLockWaits> getInnodbLockWaits(Long serverId) {
-		String sql="select * from information_schema.INNODB_LOCK_WAITS";
+		MysqlServer mysqlServer = mysqlServerMapper.selectByPrimaryKey(serverId);
+		String sql = mysqlServer.getVer().equals("8")?"select * from performance_schema.DATA_LOCKS":"select * from information_schema.INNODB_LOCK_WAITS";
 		QueryResult<List<Map<Object,Object>>> queryResult = getQueryResult(serverId, sql);
 		if (queryResult.isSuccess()) {
 			List<InnodbLockWaits> innodbLockWaits=new ArrayList<>();

@@ -48,11 +48,11 @@ public class JdbcServiceImpl implements JdbcService {
      * java.lang.String)
      */
     @Override
-    public QueryResult<List<Map<Object, Object>>> queryForList(String url, String sql, String user, String password) {
+    public QueryResult<List<Map<Object, Object>>> queryForList(String url, String sql, String user, String password, String version) {
         QueryResult<List<Map<Object, Object>>> queryResult = new QueryResult<List<Map<Object, Object>>>();
         Connection conn = null;
         try {
-            conn = getConnection(url,user,password);
+            conn = getConnection(url,user,password,version);
             if (conn != null) {
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql);
@@ -75,6 +75,8 @@ public class JdbcServiceImpl implements JdbcService {
         return queryResult;
     }
 
+
+
     /*
      * (non-Javadoc)
      *
@@ -82,12 +84,12 @@ public class JdbcServiceImpl implements JdbcService {
      * java.lang.String)
      */
     @Override
-    public QueryResult<Integer> queryForCount(String url, String sql, String user, String password) {
+    public QueryResult<Integer> queryForCount(String url, String sql, String user, String password, String version) {
         QueryResult<Integer> queryResult = new QueryResult<Integer>();
         Integer count = 0;
         Connection conn = null;
         try {
-            conn = getConnection(url,user,password);
+            conn = getConnection(url,user,password,version);
             if (conn != null) {
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql);
@@ -111,11 +113,11 @@ public class JdbcServiceImpl implements JdbcService {
 
 
     @Override
-    public QueryResult<Integer> executeSqlForBoolean(String url, String sql, String user, String password) {
+    public QueryResult<Integer> executeSqlForBoolean(String url, String sql, String user, String password, String version) {
         QueryResult<Integer> queryResult = new QueryResult<Integer>();
         Connection conn = null;
         try {
-            conn = getConnection(url,user,password);
+            conn = getConnection(url,user,password,version);
             if (conn != null) {
                 Statement stmt = conn.createStatement();
                 Integer executeResult = stmt.executeUpdate(sql);
@@ -135,10 +137,10 @@ public class JdbcServiceImpl implements JdbcService {
     }
     
     @Override
-    public void executeSql(String url, String sql, String user, String password) {
+    public void executeSql(String url, String sql, String user, String password, String version) {
         Connection conn = null;
         try {
-            conn = getConnection(url,user,password);
+            conn = getConnection(url,user,password,version);
             if (conn != null) {
                 Statement stmt = conn.createStatement();
                 Integer executeResult = stmt.executeUpdate(sql);
@@ -189,11 +191,29 @@ public class JdbcServiceImpl implements JdbcService {
 
         return conn;
     }
+
+
+    private Connection getConnection8(String url) throws Exception {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection conn = DriverManager.getConnection(url);
+        LOGGER.info("create a data connection ------------version 8");
+
+        return conn;
+    }
     
-    private Connection getConnection(String url,String uname ,String upass) throws Exception {
-        Class.forName("com.mysql.jdbc.Driver");
+    private Connection getConnection(String url,String uname ,String upass, String version) throws Exception {
+        if (version.equals("8")){
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        }else {
+            Class.forName("com.mysql.jdbc.Driver");
+        }
         Connection conn = DriverManager.getConnection(url,uname,upass);
-        LOGGER.info("create a data connection");
+        if (version.equals("8")){
+            LOGGER.info("create a data connection ------------version 8");
+        }else{
+            LOGGER.info("create a data connection ------------version 5.7及以下");
+        }
+
         return conn;
     }
     /**

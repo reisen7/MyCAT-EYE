@@ -34,7 +34,7 @@ public interface JdbcService {
 	 * @return        
 	 * @throws
 	 */
-	public QueryResult<List<Map<Object, Object>>> queryForList(String url, String sql, String user, String password);
+	public QueryResult<List<Map<Object, Object>>> queryForList(String url, String sql, String user, String password, String version);
 	/**
 	 * 根据SQL查询记录数
 	 * @Title: queryForCount   
@@ -43,7 +43,7 @@ public interface JdbcService {
 	 * @return        
 	 * @throws
 	 */
-	public QueryResult<Integer> queryForCount(String url, String sql, String user, String password);
+	public QueryResult<Integer> queryForCount(String url, String sql, String user, String password, String version);
 
 
 	/**
@@ -52,7 +52,7 @@ public interface JdbcService {
 	 * @param sql
 	 * @return
 	 */
-	public QueryResult<Integer> executeSqlForBoolean(String url, String sql, String user, String password);
+	public QueryResult<Integer> executeSqlForBoolean(String url, String sql, String user, String password, String version);
 	
 	/**
 	 * 执行SQL
@@ -61,6 +61,6 @@ public interface JdbcService {
 	 * @param sql        
 	 * @throws
 	 */
-	public void executeSql(String url, String sql, String user, String password);
+	public void executeSql(String url, String sql, String user, String password, String version);
 
 }

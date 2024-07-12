@@ -1,23 +1,20 @@
 package io.mycat.eye.web.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
 import io.mycat.eye.web.bean.Constant;
 import io.mycat.eye.web.dto.ExplainResultDto;
 import io.mycat.eye.web.dto.RestResponse;
 import io.mycat.eye.web.util.AgentUrlUtil;
 import io.mycat.eye.web.util.RestTemplateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * All rights Reserved, Designed By www.mycat.io
@@ -57,6 +54,7 @@ public class MysqlStatementController extends AbstractController
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("serverId", serverId);
         paramMap.put("orderBy", orderBy);
+        //logger.info("serverId: "+serverId+ "----- orderBy:  "+ orderBy);
         String response = restTemplateUtils.get(agentUrlUtil.getStatement(), paramMap);
         //如果请求agent返回值为空
         if (response.isEmpty())

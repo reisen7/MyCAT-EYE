@@ -143,7 +143,10 @@ public class MysqlController
     public Object mysqlVerify(@PathVariable String host, @PathVariable Integer port, @PathVariable String username,
         @PathVariable String password)
     {
-        return mysqlService.mysqlVerify(host, port, username, password);
+        // 需要提供数据的版本
+        String version = "";
+
+        return mysqlService.mysqlVerify(host, port, username, password, version);
     }
     
     /**
@@ -281,7 +284,8 @@ public class MysqlController
         String password = request.getParameter("password");
         String tags = request.getParameter("tags");
         Long clusterId = Long.parseLong(request.getParameter("clusterId"));
-        return mysqlService.saveNode(username, id, host, port, password, tags, clusterId);
+        String version = request.getParameter("version");
+        return mysqlService.saveNode(username, id, host, port, password, tags, clusterId, version);
     }
     
     /**

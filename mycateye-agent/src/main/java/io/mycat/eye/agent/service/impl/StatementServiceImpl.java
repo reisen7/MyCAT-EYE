@@ -121,10 +121,11 @@ public class StatementServiceImpl extends AbstractService implements StatementSe
         String port = String.valueOf(mysqlServer.getPort());
         String username = mysqlServer.getUsername();
         String password = mysqlServer.getPassword();
+        String version = mysqlServer.getVer();
         // 连接到目标MySQL服务器，查询show create table语句
-        String url = getDataSourceUrl(host, port, schema, username, password);
+        String url = getDataSourceUrl(host, port, schema, username, password, version);
         String sql = "show create table " + tableName;
-        QueryResult<List<Map<Object, Object>>> queryResult = jdbcService.queryForList(url, sql, username, password);
+        QueryResult<List<Map<Object, Object>>> queryResult = jdbcService.queryForList(url, sql, username, password, version);
         List<Map<Object, Object>> data = queryResult.getData();
         if (!CollectionUtils.isEmpty(data))
         {
@@ -152,10 +153,11 @@ public class StatementServiceImpl extends AbstractService implements StatementSe
         String port = String.valueOf(mysqlServer.getPort());
         String username = mysqlServer.getUsername();
         String password = mysqlServer.getPassword();
+        String version = mysqlServer.getVer();
         // 连接到目标MySQL服务器，查询show create table语句
-        String url = getDataSourceUrl(host, port, schema, username, password);
+        String url = getDataSourceUrl(host, port, schema, username, password, version);
         String sql = "show index from " + tableName;
-        QueryResult<List<Map<Object, Object>>> queryResult = jdbcService.queryForList(url, sql, username, password);
+        QueryResult<List<Map<Object, Object>>> queryResult = jdbcService.queryForList(url, sql, username, password, version);
         List<Map<Object, Object>> data = queryResult.getData();
         if (!CollectionUtils.isEmpty(data))
         {
@@ -182,13 +184,14 @@ public class StatementServiceImpl extends AbstractService implements StatementSe
         String port = String.valueOf(mysqlServer.getPort());
         String username = mysqlServer.getUsername();
         String password = mysqlServer.getPassword();
+        String version = mysqlServer.getVer();
         // 连接到目标MySQL服务器，查询events_statements_history表中的近期SQL语句
-        String url = getDataSourceUrl(host, port, "performance_schema", username, password);
+        String url = getDataSourceUrl(host, port, "performance_schema", username, password, version);
         String sql =
             "select t1.*,t2.* from (select DIGEST,max(SQL_TEXT) as SQL_TEXT,max(DIGEST_TEXT) as DIGEST_TEXT,MAX(EVENT_NAME) as EVENT_NAME,MAX(CURRENT_SCHEMA) AS CURRENT_SCHEMA from events_statements_history where CURRENT_SCHEMA not in ('sys','information_schema','mysql','test','performance_schema') and EVENT_NAME in ('statement/sql/select','statement/sql/update','statement/sql/insert','statement/sql/delete') GROUP BY DIGEST) t1 join (select DIGEST as d, COUNT_STAR,MIN_TIMER_WAIT,AVG_TIMER_WAIT,MAX_TIMER_WAIT,FIRST_SEEN,LAST_SEEN,SUM_LOCK_TIME,SUM_ROWS_AFFECTED,SUM_ROWS_SENT,SUM_ROWS_EXAMINED,SUM_CREATED_TMP_DISK_TABLES,SUM_CREATED_TMP_TABLES,SUM_SELECT_FULL_JOIN,SUM_SELECT_FULL_RANGE_JOIN,SUM_SELECT_RANGE,SUM_SELECT_RANGE_CHECK,SUM_SELECT_SCAN,SUM_SORT_MERGE_PASSES,SUM_SORT_RANGE,SUM_SORT_ROWS,SUM_SORT_SCAN,SUM_NO_INDEX_USED,SUM_NO_GOOD_INDEX_USED from events_statements_summary_by_digest) t2 on t1.DIGEST=t2.d ORDER BY "
                 + orderBy;
         QueryResult<List<Map<Object, Object>>> queryResultByHistory =
-            jdbcService.queryForList(url, sql, username, password);
+            jdbcService.queryForList(url, sql, username, password, version);
         List<Map<Object, Object>> listHistory = queryResultByHistory.getData();
         
         List<Statement> statementList = new ArrayList<Statement>();
@@ -250,9 +253,10 @@ public class StatementServiceImpl extends AbstractService implements StatementSe
         String username = mysqlServer.getUsername();
         String password = mysqlServer.getPassword();
         // 连接到目标MySQL服务器，查询show create table语句
-        String url = getDataSourceUrl(host, port, schema, username, password);
+        String version = mysqlServer.getVer();
+        String url = getDataSourceUrl(host, port, schema, username, password, version);
         String sql = "show table status like '" + table + "'";
-        QueryResult<List<Map<Object, Object>>> queryResult = jdbcService.queryForList(url, sql, username, password);
+        QueryResult<List<Map<Object, Object>>> queryResult = jdbcService.queryForList(url, sql, username, password, version);
         List<Map<Object, Object>> data = queryResult.getData();
         if (!CollectionUtils.isEmpty(data))
         {
@@ -278,10 +282,10 @@ public class StatementServiceImpl extends AbstractService implements StatementSe
         String port = String.valueOf(mysqlServer.getPort());
         String username = mysqlServer.getUsername();
         String password = mysqlServer.getPassword();
-        
+        String version = mysqlServer.getVer();
         // 连接到目标MySQL服务器，查询show create table语句
-        String url = getDataSourceUrl(host, port, schema, username, password);
-        QueryResult<List<Map<Object, Object>>> queryResult = jdbcService.queryForList(url, sql, username, password);
+        String url = getDataSourceUrl(host, port, schema, username, password, version);
+        QueryResult<List<Map<Object, Object>>> queryResult = jdbcService.queryForList(url, sql, username, password, version);
         
         if (!queryResult.isSuccess())
         {
@@ -311,17 +315,19 @@ public class StatementServiceImpl extends AbstractService implements StatementSe
         String port = String.valueOf(mysqlServer.getPort());
         String username = mysqlServer.getUsername();
         String password = mysqlServer.getPassword();
+        String version = mysqlServer.getVer();
         Integer start = pageIndex * pageSize;
         Integer offset = pageSize;
         String sqlTotal = "select count(1) from mysql.slow_log where db NOT IN (" + BUILT_IN_SCHEMA + ")";
-        Integer count = getQueryCount(host, port, sqlTotal, username, password);
+        Integer count = getQueryCount(host, port, sqlTotal, username, password, version);
         String sqlPager = "select * from mysql.slow_log where db NOT IN (" + BUILT_IN_SCHEMA + ") order by " + orderBy
             + " limit " + start + "," + offset;
         QueryResult<List<Map<Object, Object>>> slowLogQueryResult =
-            getQueryResult(host, port, sqlPager, username, password);
+            getQueryResult(host, port, sqlPager, username, password, version);
         restResponse.setCode(0);
         List<Map<Object, Object>> rows = slowLogQueryResult.getData();
         Pager<List<Map<Object, Object>>> pager = new Pager<>();
+
         pager.setRows(rows);
         pager.setTotal(count);
         restResponse.setData(pager);

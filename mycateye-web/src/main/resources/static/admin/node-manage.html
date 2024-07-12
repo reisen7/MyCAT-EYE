@@ -233,15 +233,32 @@
 								<label for="password">密码</label> <input type="password"
 									class="form-control" id="password" placeholder="请输入密码" />
 							</div>
+
+							<div class="form-group">
+								<label for="tags">数据库版本</label>
+								<!--								<input type="text" class="form-control" id="type" placeholder="版本" />-->
+								<select id="version" class="form-control selectpicker">
+									<option value="8" selected="selected">8</option>
+									<option value="5.7">5.7及以下</option>
+								</select>
+							</div>
+
 							<div class="form-group">
 								<label for="tags">标签</label> <input type="text"
 									class="form-control" id="tags" placeholder="请输入该节点的描述信息" />
 							</div>
 							<div class="form-group">
 								<label for="tags">所属集群</label>
-								<select id="clusterSelect" class="form-control selectpicker" data-rule="required" name="row[flag]"><option value="recommend" selected="selected">推荐</option><option value="index">首页</option><option value="hot">热门</option></select>
+								<select id="clusterSelect" class="form-control selectpicker" data-rule="required" name="row[flag]">
+									<option value="recommend" selected="selected">推荐</option>
+									<option value="index">首页</option>
+									<option value="hot">热门</option>
+								</select>
 								<input type="hidden" id="defaultClusterId" value="" />
 							</div>
+
+
+
 							<div class="form-group">
 								<div class="alert alert-danger" style="display: none;" id="alert"></div>
 							</div>

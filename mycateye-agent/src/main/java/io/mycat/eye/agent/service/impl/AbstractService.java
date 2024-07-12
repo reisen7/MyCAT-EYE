@@ -49,7 +49,17 @@ public class AbstractService
     // 数据库操作服务
     @Resource
     protected JdbcService jdbcService;
-    
+
+//    private String version = "8";
+//
+//    public String getVersion() {
+//        return version;
+//    }
+//
+//    public void setVersion(String version) {
+//        this.version = version;
+//    }
+
     // MySQL服务器Mapper
     @Resource
     protected MysqlServerMapper mysqlServerMapper;
@@ -88,6 +98,11 @@ public class AbstractService
         String url = "jdbc:mysql://" + host + ":" + port + "/" + schema + "?useSSL=false";
         return url;
     }
+
+    protected String getDataSourceUrl(String host, String port, String schema, String username, String password, String version)
+    {
+        return "jdbc:mysql://" + host + ":" + port + "/" +(schema!=null?schema:"") + "?useSSL=false&useUnicode=true&characterEncoding=utf-8" +((version.equals("8")) ?"&serverTimezone=GMT":"");
+    }
     
     /**
      * 检查返回结果中，是否存在数据操作异常信息 @Title: isJdbcException @param list @return @throws
@@ -111,17 +126,16 @@ public class AbstractService
     }
     
     protected QueryResult<List<Map<Object, Object>>> getQueryResult(String host, String port, String sql,
-        String username, String password)
-    {
-        String url = getDataSourceUrl(host, port, username, password);
-        QueryResult<List<Map<Object, Object>>> queryResult = jdbcService.queryForList(url, sql, username, password);
+        String username, String password, String version)  {
+        String url = getDataSourceUrl(host, port, "", username, password, version);
+        QueryResult<List<Map<Object, Object>>> queryResult = jdbcService.queryForList(url, sql, username, password, version);
         return queryResult;
     }
     
-    protected Integer getQueryCount(String host, String port, String sql, String username, String password)
+    protected Integer getQueryCount(String host, String port, String sql, String username, String password, String version)
     {
-        String url = getDataSourceUrl(host, port, username, password);
-        QueryResult<Integer> countQueryResult = jdbcService.queryForCount(url, sql,username,password);
+        String url = getDataSourceUrl(host, port,"", username, password, version);
+        QueryResult<Integer> countQueryResult = jdbcService.queryForCount(url, sql,username,password, version);
         return countQueryResult.getData();
     }
     
@@ -132,8 +146,11 @@ public class AbstractService
         String port = String.valueOf(mysqlServer.getPort());
         String username = mysqlServer.getUsername();
         String password = mysqlServer.getPassword();
-        String url = getDataSourceUrl(host, port, username, password);
-        QueryResult<List<Map<Object, Object>>> queryResult = jdbcService.queryForList(url, sql, username, password);
+        String version = mysqlServer.getVer();
+        String url = getDataSourceUrl(host, port, "", username, password, version);
+
+
+        QueryResult<List<Map<Object, Object>>> queryResult = jdbcService.queryForList(url, sql, username, password, version);
         return queryResult;
     }
     
@@ -144,8 +161,9 @@ public class AbstractService
         String port = String.valueOf(mysqlServer.getPort());
         String username = mysqlServer.getUsername();
         String password = mysqlServer.getPassword();
-        String url = getDataSourceUrl(host, port, schema, username, password);
-        QueryResult<List<Map<Object, Object>>> queryResult = jdbcService.queryForList(url, sql, username, password);
+        String version = mysqlServer.getVer();
+        String url = getDataSourceUrl(host, port, schema, username, password, version);
+        QueryResult<List<Map<Object, Object>>> queryResult = jdbcService.queryForList(url, sql, username, password, version);
         return queryResult;
     }
     /**
@@ -183,10 +201,10 @@ public class AbstractService
     }
     
     public QueryResult<List<Map<Object, Object>>> getQueryResult(String host, String port, String schema, String sql,
-        String username, String password)
+        String username, String password, String version)
     {
-        String url = getDataSourceUrl(host, port, schema, username, password);
-        QueryResult<List<Map<Object, Object>>> queryResult = jdbcService.queryForList(url, sql, username, password);
+        String url = getDataSourceUrl(host, port, schema, username, password,version);
+        QueryResult<List<Map<Object, Object>>> queryResult = jdbcService.queryForList(url, sql, username, password, version);
         return queryResult;
     }
     
@@ -204,8 +222,10 @@ public class AbstractService
         String port = String.valueOf(mysqlServer.getPort());
         String username = mysqlServer.getUsername();
         String password = mysqlServer.getPassword();
+        String version = mysqlServer.getVer();
         String url = "jdbc:mysql://" + host + ":" + port + "/" + "?useSSL=false";
-        QueryResult<List<Map<Object, Object>>> queryResult = jdbcService.queryForList(url, sql, username, password);
+        url = getDataSourceUrl(host, port,"", username, password, version);
+        QueryResult<List<Map<Object, Object>>> queryResult = jdbcService.queryForList(url, sql, username, password, version);
         if (queryResult.isSuccess() == false) {
             restResponse.setCode(1);
             restResponse.setMessage(queryResult.getException());
@@ -225,10 +245,12 @@ public class AbstractService
         String port = String.valueOf(mysqlServer.getPort());
         String username = mysqlServer.getUsername();
         String password = mysqlServer.getPassword();
+        String version = mysqlServer.getVer();
         //String url = "jdbc:mysql://" + host + ":" + port + "/" + "?user=" + username + "&password=" + password
         //        + "&useSSL=false";
         String url = "jdbc:mysql://" + host + ":" + port + "/?useSSL=false";
-        QueryResult<Integer> queryResult = jdbcService.executeSqlForBoolean(url,sql,username,password);
+        url = getDataSourceUrl(host, port,"", username, password, version);
+        QueryResult<Integer> queryResult = jdbcService.executeSqlForBoolean(url,sql,username,password, version);
         if (queryResult.isSuccess() == false) {
             restResponse.setCode(Constant.FAIL_CODE);
             restResponse.setMessage(queryResult.getException());
@@ -239,4 +261,7 @@ public class AbstractService
         restResponse.setData(queryResult.getData());
         return restResponse;
     }
+
+
+
 }

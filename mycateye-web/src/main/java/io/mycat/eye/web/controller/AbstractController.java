@@ -1,5 +1,7 @@
 package io.mycat.eye.web.controller;
 
+import org.slf4j.Logger;
+
 /**
  * The type Abstract controller.
  *
@@ -11,6 +13,7 @@ package io.mycat.eye.web.controller;
  */
 public class AbstractController
 {
+    protected static Logger logger = null;
     /** 页面限制大小*/
     public static final String LIMIT_NAME = "limit";
     

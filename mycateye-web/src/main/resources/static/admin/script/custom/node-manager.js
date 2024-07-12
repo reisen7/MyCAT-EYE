@@ -137,7 +137,8 @@ $("#submit").click(function() {
 	var password = $("#password").val();
 	var tags = $("#tags").val();
 	var clusterId = $("#clusterSelect").val();
-	var ajaxUrl = ajaxUrlPrefix + "/mysql/node/save?id=" + id + "&host=" + host + "&port=" + port + "&username=" + username + "&password=" + password + "&tags=" + tags + "&clusterId=" + clusterId;
+	var version = $('#version').val();
+	var ajaxUrl = ajaxUrlPrefix + "/mysql/node/save?id=" + id + "&host=" + host + "&port=" + port + "&username=" + username + "&password=" + password + "&tags=" + tags + "&clusterId=" + clusterId +"&version=" + version;
 	$.getJSON(ajaxUrl, function(json) {
 		if(json.code == 200) {
 			location.reload(true);

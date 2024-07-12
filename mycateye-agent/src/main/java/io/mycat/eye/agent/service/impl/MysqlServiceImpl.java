@@ -17,6 +17,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mycat.eye.agent.bean.Constant;
@@ -47,7 +48,10 @@ import io.mycat.eye.agent.util.MiscUtil;
 @Service
 public class MysqlServiceImpl extends AbstractService implements MysqlService
 {
-    
+
+    @Value("")
+    private String propertiesUrl;
+
     @Resource
     protected JdbcService jdbcService;
     
@@ -60,20 +64,29 @@ public class MysqlServiceImpl extends AbstractService implements MysqlService
      * @see cn.bqjr.dbeye.service.MysqlService#verify(java.lang.String,
      * java.lang.String, java.lang.String, java.lang.String)
      */
+
+
     @Override
-    public RestResponse<Object> mysqlVerify(String host, Integer port, String username, String password)
+    public RestResponse<Object> mysqlVerify(String host, Integer port, String username, String password, String version)
     {
         RestResponse<Object> restResponse = new RestResponse<Object>();
-        String dataSourceUrl =
-            "jdbc:mysql://" + host + ":" + port + "?user=" + username + "&password=" + password + "&useSSL=false";
+        String dataSourceUrl = "";
+        if (version.equals("8")){
+            dataSourceUrl = "jdbc:mysql://" + host + ":" + port + "?user=" + username + "&password=" + password + "&useSSL=false&serverTimezone=GMT";
+        }else if (version.equals("5.7")){
+            dataSourceUrl = "jdbc:mysql://" + host + ":" + port + "?user=" + username + "&password=" + password + "&useSSL=false";
+        }
+
+
         //查看版本
         String sqlVersion = "select version() as version";
+
         QueryResult<List<Map<Object, Object>>> queryResultVersion =
-            jdbcService.queryForList(dataSourceUrl, sqlVersion, username, password);
+            jdbcService.queryForList(dataSourceUrl, sqlVersion, username, password, version);
         //开启慢查询
         String sqlSlow = "set global slow_query_log=ON";
         QueryResult<List<Map<Object, Object>>> queryResultSlow =
-            jdbcService.queryForList(dataSourceUrl, sqlSlow, username, password);
+            jdbcService.queryForList(dataSourceUrl, sqlSlow, username, password, version);
         if (!queryResultSlow.isSuccess())
         {
             logger.error("开启慢查询失败");
@@ -85,7 +98,7 @@ public class MysqlServiceImpl extends AbstractService implements MysqlService
         //将日志输出到表，方便查询慢查询日志
         String sqlLogOutput = "set global log_output='TABLE'";
         QueryResult<List<Map<Object, Object>>> queryLogOutput =
-            jdbcService.queryForList(dataSourceUrl, sqlLogOutput, username, password);
+            jdbcService.queryForList(dataSourceUrl, sqlLogOutput, username, password, version);
         if (!queryLogOutput.isSuccess())
         {
             logger.error("设置日志输出到表失败");
@@ -104,7 +117,7 @@ public class MysqlServiceImpl extends AbstractService implements MysqlService
             return restResponse;
         }
         
-        String version = (String)queryResultVersion.getData().get(0).get("version");
+        //String version = (String)queryResultVersion.getData().get(0).get("version");
         
         //版本不为5.7+，则返回
         /*
@@ -119,7 +132,7 @@ public class MysqlServiceImpl extends AbstractService implements MysqlService
         //查看内置数据库是否存在
         String sqlShowDatabases = "show databases";
         QueryResult<List<Map<Object, Object>>> queryResultShowDatabases =
-            jdbcService.queryForList(dataSourceUrl, sqlShowDatabases, username, password);
+            jdbcService.queryForList(dataSourceUrl, sqlShowDatabases, username, password, version);
         List<Map<Object, Object>> data = queryResultShowDatabases.getData();
         List<String> allDatabases = new ArrayList<String>();
         for (Map<Object, Object> map : data)
@@ -173,11 +186,11 @@ public class MysqlServiceImpl extends AbstractService implements MysqlService
     
     @Override
     public RestResponse<Object> saveNode(String username, Long id, String host, Integer port, String password,
-        String tags, Long clusterId)
-    {
+        String tags, Long clusterId, String version) {
+
         RestResponse<Object> restResponse = new RestResponse<>();
         //验证MySQL主机、端口、用户名、密码
-        RestResponse<Object> mysqlVerifyRestResponse = mysqlVerify(host, port, username, password);
+        RestResponse<Object> mysqlVerifyRestResponse = mysqlVerify(host, port, username, password, version);
         if (mysqlVerifyRestResponse.getCode() != Constant.SUCCESS_CODE)
         {
             return mysqlVerifyRestResponse;

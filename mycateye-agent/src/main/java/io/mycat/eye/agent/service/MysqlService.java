@@ -36,7 +36,7 @@ public interface MysqlService {
      * @return        
      * @throws
      */
-    RestResponse<Object> mysqlVerify(String host,Integer port,String username,String password);
+    RestResponse<Object> mysqlVerify(String host,Integer port,String username,String password, String version);
 
     /**
      * 获取MySQL节点的分页列表
@@ -59,10 +59,11 @@ public interface MysqlService {
      * @param password
      * @param tags
      * @param clusterId
+     * @param version
      * @return        
      * @throws
      */
-    RestResponse<Object> saveNode(String username, Long id, String host, Integer port, String password, String tags, Long clusterId);
+    RestResponse<Object> saveNode(String username, Long id, String host, Integer port, String password, String tags, Long clusterId, String version);
 
     /**
      * 删除节点信息

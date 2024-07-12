@@ -45,8 +45,9 @@ public class UpdateMysqlStatusTask extends AbstractTask {
 			String port = String.valueOf(mysqlServer.getPort());
 			String username = mysqlServer.getUsername();
 			String password = mysqlServer.getPassword();
+			String version = mysqlServer.getVer();
 			QueryResult<List<Map<Object, Object>>> statusQueryResult = getQueryResult(host, port, STATUS_SQL, username,
-					password);
+					password, version);
 
 			// 如果数据库操作异常，则返回
 			if (!statusQueryResult.isSuccess()) {

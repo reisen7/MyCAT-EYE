@@ -74,7 +74,7 @@ public class MysqlClusterServiceImpl extends AbstractService implements MysqlClu
     /**
      * 获取节点的复制关系
      * @Title: getRelation   
-     * @param mysqlServer
+     * @param
      * @return        
      * @throws
      */

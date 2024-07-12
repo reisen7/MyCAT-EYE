@@ -100,8 +100,9 @@ public class SuggestionServiceImpl implements SuggestionService
         String port = String.valueOf(mysqlServer.getPort());
         String username = mysqlServer.getUsername();
         String password = mysqlServer.getPassword();
+        String version = mysqlServer.getVer();
         String sql = "show status";
-        return getQueryResult(host, port, sql, username, password);
+        return getQueryResult(host, port, sql, username, password, version);
     }
     
     /**
@@ -109,12 +110,11 @@ public class SuggestionServiceImpl implements SuggestionService
      * username @param password @return @throws
      */
     private QueryResult<List<Map<Object, Object>>> getQueryResult(String host, String port, String sql, String username,
-        String password)
+        String password, String version)
     {
-        String dataSourceUrl =
-            "jdbc:mysql://" + host + ":" + port + "?user=" + username + "&password=" + password + "&useSSL=false";
+        String dataSourceUrl = "jdbc:mysql://" + host + ":" + port + "/" + "?useSSL=false" +((version.equals("8")) ?"&serverTimezone=GMT":"");;
         QueryResult<List<Map<Object, Object>>> queryResult =
-            jdbcService.queryForList(dataSourceUrl, sql, username, password);
+            jdbcService.queryForList(dataSourceUrl, sql, username, password, version);
         
         return queryResult;
     }

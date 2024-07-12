@@ -70,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, host, port, username, password, tags, cluster_id, create_time
+    id, host, port, username, password, tags, cluster_id, create_time, ver
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="io.mycat.eye.agent.bean.MysqlServerExample" >
     select
