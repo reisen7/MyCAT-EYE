@@ -134,7 +134,8 @@ $("#submit").click(function() {
 	var host = $("#host").val();
 	var port = $("#port").val();
 	var username = $("#username").val();
-	var password = $("#password").val();
+	var password = encodeURIComponent($("#password").val());
+	console.log(password)
 	var tags = $("#tags").val();
 	var clusterId = $("#clusterSelect").val();
 	var version = $('#version').val();

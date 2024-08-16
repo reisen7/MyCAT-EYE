@@ -53,6 +53,7 @@ public class JdbcServiceImpl implements JdbcService {
         Connection conn = null;
         try {
             conn = getConnection(url,user,password,version);
+            LOGGER.debug(password);
             if (conn != null) {
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql);

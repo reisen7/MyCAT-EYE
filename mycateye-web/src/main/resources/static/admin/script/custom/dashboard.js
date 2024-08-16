@@ -17,6 +17,58 @@ $(function($) {
 			fnShowProcesslistInit(serverId);
 		});
 	});
+	// 新增动态刷新图表
+	// let intervalId = null;
+	// const intervalValue = parseInt(15*100,10);
+	// setNewInterval(intervalValue);
+	//
+	// function setNewInterval(intervalValue) {
+	// 	if (intervalId){
+	// 		clearInterval(intervalId)
+	// 	}
+	//
+	// 	if (!isNaN(intervalValue) && intervalValue > 0){
+	// 		intervalId = setInterval(function (){
+	// 			var serverId = window.localStorage.getItem("currentServerId");
+	// 			var ajaxUrl = ajaxUrlPrefix + "/dashboard/" + serverId + "/dashboard-overview";
+	// 			$.getJSON(ajaxUrl, function(json) {
+	// 				fnLoadQPSChartData(json.qpsChartData);
+	//
+	// 			})
+	// 			var now = new Date();
+	// 			console.log('Request sent at:', now.toISOString());
+	// 		},intervalValue)
+	// 	}
+	// }
+
+	let timerId = null;
+
+	function refreshChart() {
+		var serverId = window.localStorage.getItem("currentServerId");
+		var ajaxUrl = ajaxUrlPrefix + "/dashboard/" + serverId + "/dashboard-overview";
+		$.getJSON(ajaxUrl, function(json) {
+			//加载QPS数据图表
+			fnLoadQPSChartData(json.qpsChartData);
+			// 图表数据加载完成后，重新设置定时器
+			setNewTimeout();
+		});
+		var now = new Date();
+		console.log('Request sent at:', now.toISOString());
+		console.log("定时获取数据");
+	}
+
+	function setNewTimeout() {
+		if (timerId) {
+			clearTimeout(timerId); // 清除之前的定时器（如果有的话）
+		}
+		const delay = 15 * 1000; // 15秒
+		timerId = setTimeout(refreshChart, delay);
+	}
+
+// 首次调用以设置定时器
+	setNewTimeout();
+
+
 
 });
 //初始化控制台概要数据
@@ -145,6 +197,7 @@ var fnLoadQPSChartData = function(qpsChartData) {
 	};
 	qpsChart.setOption(optionQps);
 };
+
 //加载查询统计图表数据
 var fnLoadQueryChatData = function(queryChartData) {
 	var xAxisDataQuery = [];
@@ -192,6 +245,7 @@ var fnLoadQueryChatData = function(queryChartData) {
 	
 	myChart.setOption(option);
 }
+
 //设置图表宽度
 var fnSetChartWidth=function(obj){
 	obj.style.width=window.localStorage.getItem("chartWidth");

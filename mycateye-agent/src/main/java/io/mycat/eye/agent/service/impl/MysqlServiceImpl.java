@@ -76,7 +76,11 @@ public class MysqlServiceImpl extends AbstractService implements MysqlService
         }else if (version.equals("5.7")){
             dataSourceUrl = "jdbc:mysql://" + host + ":" + port + "?user=" + username + "&password=" + password + "&useSSL=false";
         }
-
+//        if (version.equals("8")){
+//            dataSourceUrl = "jdbc:mysql://" + host + ":" + port + "?useSSL=false&serverTimezone=GMT";
+//        }else if (version.equals("5.7")){
+//            dataSourceUrl = "jdbc:mysql://" + host + ":" + port + "?useSSL=false";
+//        }
 
         //查看版本
         String sqlVersion = "select version() as version";
